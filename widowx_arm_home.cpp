@@ -6,6 +6,10 @@
  * Ana Cruz-Martín, 2015
  * 
  * DISCLAIMER: This is a work-in-progress and basic code, not finished yet.
+ * 
+ * This code must be integrated into a ros package, and then called with rosrun,
+ * while the widowx arm software by Robotnik is running.
+ * https://github.com/RobotnikAutomation/widowx_arm
  *
  * TO DO:
  * - Clean and organize code
