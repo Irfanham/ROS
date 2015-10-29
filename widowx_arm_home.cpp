@@ -5,11 +5,14 @@
  * Basic homing for the WidowX arm. Joints 1 to 5 are set to 0 degrees.
  * Ana Cruz-Martín, 2015
  * 
- * DISCLAIMER: This is a work-in-progress and basic code, not finished yet.
+ * DISCLAIMER: This is a work-in-progress test code, not finished yet.
  * 
  * This code must be integrated into a ros package, and then called with rosrun,
  * while the widowx arm software by Robotnik is running.
  * https://github.com/RobotnikAutomation/widowx_arm
+ * 
+ * For videos and further information
+ * http://jafma.net/ana/theweekendarchaeologist/wp-admin/post.php?post=564
  *
  * TO DO:
  * - Clean and organize code
@@ -42,11 +45,11 @@ int main(int argc, char **argv)
   int count = 0;
   while (ros::ok() && count<=200)
   {
-    joint2.publish(degrees);
-    joint3.publish(degrees);
-    joint4.publish(degrees);
-    joint5.publish(degrees);
-    joint1.publish(degrees);
+    joint2.publish(degrees); /* Shoulder, [-pi/2, pi/2] */
+    joint3.publish(degrees); /* Elbow , [-pi/2, pi/2]  */
+    joint4.publish(degrees); /* Wrist (pitch), [-pi/2, pi/2]  */
+    joint5.publish(degrees); /* Wrist (roll), [-pi/2, pi/2]  */
+    joint1.publish(degrees); /* Waist, [-pi/2, pi/2]  */
     ROS_INFO("Count: %d\n",count);
     count++;
  
