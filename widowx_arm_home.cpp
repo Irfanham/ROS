@@ -12,7 +12,7 @@
  * https://github.com/RobotnikAutomation/widowx_arm
  * 
  * For videos and further information
- * http://jafma.net/ana/theweekendarchaeologist/wp-admin/post.php?post=564
+ * http://jafma.net/ana/theweekendarchaeologist/?p=564
  *
  * TO DO:
  * - Clean and organize code
