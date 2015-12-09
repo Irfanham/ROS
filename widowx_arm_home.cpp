@@ -3,7 +3,7 @@
 #include "sensor_msgs/JointState.h"
 
 /**
- * Basic homing for the WidowX arm. Joints 1 to 5 are set to 0 degrees.
+ * Basic testing for the WidowX arm. Joints 1 to 5 are set to 0 degrees.
  * Ana Cruz-Martín, 2015
  *
  * DISCLAIMER: This is a work-in-progress test code, not finished yet.
@@ -32,7 +32,7 @@ void jointsCallback(const sensor_msgs::JointState::ConstPtr& jointsmsg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv , "widowx_arm_home");
+  ros::init(argc, argv , "widowx_arm_testing");
   ros::NodeHandle n;
 
   // Topics of the joints.
@@ -54,20 +54,59 @@ int main(int argc, char **argv)
    * Main code.
    */
 
-  std_msgs::Float64 degrees;
-  degrees.data = 0;
+  std_msgs::Float64 radszero, radspos, radsneg;
+  radszero.data = 0;
+  radspos.data = 0.25;
+  radsneg.data = -0.25;
   int count = 0;
   while (ros::ok() && count<=10)
   {
     if (count == 0)
     {
-       ROS_INFO("3 SECONDS TO HOME\n");
+       // "Homing" (all joints to zero)
+       ROS_INFO("3 SECONDS TO HOME\n");	
        ros::Duration(3).sleep();
-       joint2.publish(degrees);
-       joint3.publish(degrees);
-       joint4.publish(degrees);
-       joint5.publish(degrees);
-       joint1.publish(degrees);
+       joint2.publish(radszero);
+       joint3.publish(radszero);
+       joint4.publish(radszero);
+       joint5.publish(radszero);
+       joint1.publish(radszero);
+
+       // Once the robot is "homed", we check that all joints move in both directions
+       joint1.publish(radspos);	// Move joint 1 with positive and negative values
+       ros::Duration(2).sleep();
+       joint1.publish(radsneg);
+       ros::Duration(2).sleep();
+       joint1.publish(radszero);
+       ros::Duration(3).sleep();
+ 
+       joint2.publish(radspos);	// Move joint 2 with positive and negative values
+       ros::Duration(2).sleep();
+       joint2.publish(radsneg);
+       ros::Duration(2).sleep();
+       joint2.publish(radszero);
+       ros::Duration(3).sleep();
+
+       joint3.publish(radspos);	// Move joint 3 with positive and negative values
+       ros::Duration(2).sleep();
+       joint3.publish(radsneg);
+       ros::Duration(2).sleep();
+       joint3.publish(radszero);
+       ros::Duration(3).sleep();
+
+       joint4.publish(radspos);	// Move joint 4 with positive and negative values
+       ros::Duration(2).sleep();
+       joint4.publish(radsneg);
+       ros::Duration(2).sleep();
+       joint4.publish(radszero);
+       ros::Duration(3).sleep();
+
+       joint5.publish(radspos);	// Move joint 5 with positive and negative values
+       ros::Duration(2).sleep();
+       joint5.publish(radsneg);
+       ros::Duration(2).sleep();
+       joint5.publish(radszero);
+       ros::Duration(3).sleep();
     }
     ROS_INFO("Count: %d\n",count);
     count++;
