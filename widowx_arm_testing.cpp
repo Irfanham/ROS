@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 #include "sensor_msgs/JointState.h"
+#include "arbotix_msgs/Relax.h"
 
 /**
  * Basic testing for the WidowX arm. Joints 1 to 5 are set to 0 degrees.
@@ -17,8 +18,6 @@
  *
  * TO DO:
  * - Clean and organize code
- * - Use services for relaxing joints
- * - Open/close gripper
  * - Create a proper launch file
  * - rviz integration
  */
@@ -41,23 +40,36 @@ int main(int argc, char **argv)
   ros::Publisher joint3 = n.advertise<std_msgs::Float64>("/arm_3_joint/command", 1000);
   ros::Publisher joint4 = n.advertise<std_msgs::Float64>("/arm_4_joint/command", 1000);
   ros::Publisher joint5 = n.advertise<std_msgs::Float64>("/arm_5_joint/command", 1000);
+  ros::Publisher gripper = n.advertise<std_msgs::Float64>("/gripper_1_joint/command", 1000);
   ros::Rate loop_rate(10);
 
   ros::Subscriber joints = n.subscribe("/joint_states", 1000, jointsCallback);
 
   // Relax services of the joints
-  //ros::ServiceClient client_service_joint2 = n.serviceClient<arbotix_ros::arbotix_msgs::Relax>("Relax);
-  //arbotix_ros::arbotix_msgs::Relax service_joint2;
-  //service_joint2.request = ();
+  ros::ServiceClient client_service_joint1_relax = n.serviceClient<arbotix_msgs::Relax>("/arm_1_joint/relax");
+  ros::ServiceClient client_service_joint2_relax = n.serviceClient<arbotix_msgs::Relax>("/arm_2_joint/relax");
+  ros::ServiceClient client_service_joint3_relax = n.serviceClient<arbotix_msgs::Relax>("/arm_3_joint/relax");
+  ros::ServiceClient client_service_joint4_relax = n.serviceClient<arbotix_msgs::Relax>("/arm_4_joint/relax");
+  ros::ServiceClient client_service_joint5_relax = n.serviceClient<arbotix_msgs::Relax>("/arm_5_joint/relax");
+  ros::ServiceClient client_service_gripper_relax = n.serviceClient<arbotix_msgs::Relax>("/gripper_1_joint/relax");
+
+  arbotix_msgs::Relax srv_joint1_relax;
+  arbotix_msgs::Relax srv_joint2_relax;
+  arbotix_msgs::Relax srv_joint3_relax;
+  arbotix_msgs::Relax srv_joint4_relax;
+  arbotix_msgs::Relax srv_joint5_relax;
+  arbotix_msgs::Relax srv_gripper_relax;
 
   /**
    * Main code.
    */
 
-  std_msgs::Float64 radszero, radspos, radsneg;
+  std_msgs::Float64 radszero, radspos, radsneg, gripperzero, gripperpos;
   radszero.data = 0;
   radspos.data = 0.25;
   radsneg.data = -0.25;
+  gripperzero.data = 0;
+  gripperpos.data = 2.0;
   int count = 0;
   while (ros::ok() && count<=10)
   {
@@ -70,9 +82,17 @@ int main(int argc, char **argv)
        joint3.publish(radszero);
        joint4.publish(radszero);
        joint5.publish(radszero);
-       joint1.publish(radszero);
-
+       joint1.publish(radszero); 
+       gripper.publish(gripperzero);
+       ros::Duration(2).sleep(); 
+       gripper.publish(gripperpos); 
+       ros::Duration(2).sleep();
+       gripper.publish(gripperzero); 
+       ros::Duration(2).sleep(); 
+       
        // Once the robot is "homed", we check that all joints move in both directions
+       ROS_INFO("3 SECONDS TO CHECK DIRECTIONS\n");	
+       ros::Duration(3).sleep();
        joint1.publish(radspos);	// Move joint 1 with positive and negative values
        ros::Duration(2).sleep();
        joint1.publish(radsneg);
@@ -107,6 +127,64 @@ int main(int argc, char **argv)
        ros::Duration(2).sleep();
        joint5.publish(radszero);
        ros::Duration(3).sleep();
+
+       // Finally, we relax every joint in the proper order. Look out: the arm rests completely, collitions may happen!!
+       ROS_INFO("3 SECONDS TO RELAX\n");	
+       ros::Duration(3).sleep();
+       if (client_service_gripper_relax.call(srv_gripper_relax))
+       {
+          ROS_INFO("Gripper relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Gripper relax failed");
+       }
+       ros::Duration(1).sleep();
+       if (client_service_joint5_relax.call(srv_joint5_relax))
+       {
+          ROS_INFO("Joint 5 relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Joint 5 relax failed");
+       }
+       ros::Duration(1).sleep();
+       if (client_service_joint4_relax.call(srv_joint4_relax))
+       {
+          ROS_INFO("Joint 4 relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Joint 4 relax failed");
+       }
+       ros::Duration(1).sleep();
+       if (client_service_joint3_relax.call(srv_joint3_relax))
+       {
+          ROS_INFO("Joint 3 relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Joint 3 relax failed");
+       }
+       ros::Duration(1).sleep();
+       if (client_service_joint2_relax.call(srv_joint2_relax))
+       {
+          ROS_INFO("Joint 2 relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Joint 2 relax failed");
+       }
+       ros::Duration(1).sleep();
+       if (client_service_joint1_relax.call(srv_joint1_relax))
+       {
+          ROS_INFO("Joint 1 relaxed");
+       }
+       else
+       {
+    	  ROS_ERROR("Joint 1 relax failed");
+       }
+       ros::Duration(1).sleep();
     }
     ROS_INFO("Count: %d\n",count);
     count++;
