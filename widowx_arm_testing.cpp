@@ -4,7 +4,7 @@
 #include "arbotix_msgs/Relax.h"
 
 /**
- * Basic testing for the WidowX arm. Joints 1 to 5 are set to 0 degrees.
+ * Basic testing for the WidowX arm.
  * Ana Cruz-Martín, 2015
  *
  * DISCLAIMER: This is a work-in-progress test code, not finished yet.
