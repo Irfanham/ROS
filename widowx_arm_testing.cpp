@@ -5,7 +5,7 @@
 
 /**
  * Basic testing for the WidowX arm.
- * Ana Cruz-Martín, 2015
+ * Copyright (C) 2015 Ana Cruz-Martín (anacruzmartin@gmail.com)
  *
  * DISCLAIMER: This is a work-in-progress test code, not finished yet.
  *
